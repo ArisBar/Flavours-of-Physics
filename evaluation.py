@@ -133,7 +133,7 @@ def check_agreement(clf):
     Return KS metric for a given classifier and print test result
     """
     check_agreement = pd.read_csv(folder + 'check_agreement.csv', index_col='id')
-    new_features(check_agreement)
+    features.new_features(check_agreement)
     agreement_probs = clf.predict_proba(check_agreement[variables])[:, 1]
     ks = compute_ks(
     agreement_probs[check_agreement['signal'].values == 0],
@@ -148,7 +148,7 @@ def check_correlation(clf):
     Return cvm metric for a given classifier and print test result
     """
     check_correlation = pd.read_csv(folder + 'check_correlation.csv', index_col='id')
-    new_features(check_correlation)
+    features.new_features(check_correlation)
     correlation_probs = clf.predict_proba(check_correlation[variables])[:, 1]
     cvm = compute_cvm(correlation_probs, check_correlation['mass'])
     print('CvM metric', cvm, cvm < 0.002)
