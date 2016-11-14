@@ -1,4 +1,5 @@
 # coding=utf-8
+# Evaluation metrics for the competition
 # https://github.com/yandexdataschool/flavours-of-physics-start/blob/master/evaluation.py
 
 import numpy
