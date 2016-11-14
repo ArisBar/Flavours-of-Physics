@@ -8,7 +8,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.cross_validation import KFold
 import evaluation
-import new_features
+from features import new_features
 
 # Load training data
 folder = 'data/'
