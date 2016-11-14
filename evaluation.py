@@ -5,7 +5,6 @@
 import numpy
 from sklearn.metrics import roc_curve, auc
 
-
 def __rolling_window(data, window_size):
     """
     Rolling window: take window with definite size through the array
@@ -128,3 +127,40 @@ def roc_auc_truncated(labels, predictions, tpr_thresholds=(0.2, 0.4, 0.6, 0.8),
     # roc auc normalization to be 1 for an ideal classifier
     area /= numpy.sum((tpr_thresholds[1:] - tpr_thresholds[:-1]) * numpy.array(roc_weights))
     return area
+
+def check_agreement(clf):
+    """
+    Return KS metric for a given classifier and print test result
+    """
+    check_agreement = pd.read_csv(folder + 'check_agreement.csv', index_col='id')
+    new_features(check_agreement)
+    agreement_probs = clf.predict_proba(check_agreement[variables])[:, 1]
+    ks = compute_ks(
+    agreement_probs[check_agreement['signal'].values == 0],
+    agreement_probs[check_agreement['signal'].values == 1],
+    check_agreement[check_agreement['signal'] == 0]['weight'].values,
+    check_agreement[check_agreement['signal'] == 1]['weight'].values)
+    return ks
+    print('KS metric', ks, ks < 0.09)
+    
+def check_correlation(clf):
+    """
+    Return cvm metric for a given classifier and print test result
+    """
+    check_correlation = pd.read_csv(folder + 'check_correlation.csv', index_col='id')
+    new_features(check_correlation)
+    correlation_probs = clf.predict_proba(check_correlation[variables])[:, 1]
+    cvm = compute_cvm(correlation_probs, check_correlation['mass'])
+    print('CvM metric', cvm, cvm < 0.002)
+    return cvm
+
+def compute_AUC(clf, train_data):
+    """
+    Compute weighted AUC on the training data with min_ANNmuon > 0.4
+    """
+    train_eval = train_data[train_data['min_ANNmuon'] > 0.4]
+    train_probs = clf1.predict_proba(train_eval[variables])[:, 1]
+    AUC = roc_auc_truncated(train_eval['signal'], train_probs)
+    return AUC
+    print('AUC', AUC)
+    
