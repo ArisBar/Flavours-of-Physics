@@ -32,8 +32,10 @@ baseline = GradientBoostingClassifier(n_estimators=40, learning_rate=0.01, subsa
 baseline.fit(train[variables], train['signal'])
 
 # Check agreement test
-
+evaluation.check_agreement(baseline)
 
 # Check correlation test
+evaluation.check_correlation(baseline)
 
 # Compute weighted AUC on the training data with min_ANNmuon > 0.4¶
+evaluation.compute_AUC(baseline, train)
