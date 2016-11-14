@@ -1,2 +1,2 @@
 # IFT-6390-project
-Flavours 
+Flavours of physics 
