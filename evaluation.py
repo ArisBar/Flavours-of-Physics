@@ -143,7 +143,7 @@ def check_agreement(clf):
     check_agreement[check_agreement['signal'] == 1]['weight'].values)
     return ks
     print('KS metric', ks, ks < 0.09)
-    
+
 def check_correlation(clf):
     """
     Return cvm metric for a given classifier and print test result
