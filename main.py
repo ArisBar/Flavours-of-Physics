@@ -31,8 +31,8 @@ var_out = ['SPDhits', 'production', 'signal', 'mass', 'min_ANNmuon']
 variables = [v for v in variables if v not in var_out]
 
 # In case we want to eventually compare BostedTree and Neural network approaches 
-from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(train[variables], train['signal'], test_size=0.1, random_state=555)
+# from sklearn.model_selection import train_test_split
+# X_train, X_test, y_train, y_test = train_test_split(train[variables], train['signal'], test_size=0.1, random_state=555)
 
  
 kf = KFold(len(train), n_folds=5, random_state=555, shuffle=True)
