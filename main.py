@@ -7,8 +7,9 @@ from sklearn.model_selection import cross_val_score
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.cross_validation import KFold
+from sklearn.svm import SVC
 import evaluation
-from features import new_features
+from feature import new_feature
 
 # Load training data
 folder = 'data/'
@@ -30,6 +31,52 @@ variables = [v for v in variables if v not in var_out]
 baseline = GradientBoostingClassifier(n_estimators=40, learning_rate=0.01, subsample=0.7,
                                       min_samples_leaf=10, max_depth=7, random_state=11)
 baseline.fit(train[variables], train['signal'])
+
+# First attempts   
+
+results=[]
+
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import AdaBoostClassifier
+
+kf = KFold(len(train), n_folds=5, random_state=555, shuffle=True)
+
+
+for train_idx, test_idx in kf:
+    X_train = train[variables].iloc[train_idx]
+    y_train = train['signal'].iloc[train_idx]
+    X_test = train[variables].iloc[test_idx]
+    y_test = train['signal'].iloc[test_idx]
+    from sklearn import svm
+    #clf1 = DecisionTreeClassifier(random_state=0, max_depth=6)
+    clf1 = AdaBoostClassifier(DecisionTreeClassifier(random_state=0, max_depth=2), algorithm = "SAMME.R", 
+                              n_estimators = 200)
+
+
+    #clf2 = SVC(kernel='linear', C=1)
+
+
+    #X_train, X_test, y_train, y_test = train_test_split(train[variables], train['signal'], test_size=0.4, random_state=0)
+
+    clf1.fit(X_train, y_train)
+
+    #X_test_eval = X_test[X_test['min_ANNmuon'] > 0.4]
+    #y_test_eval = t_test[y_test['min_ANNmuon']>0.4]
+
+
+    
+    train_probs = clf1.predict_proba(X_test)[:, 1]
+    AUC = evaluation.roc_auc_truncated(y_test, train_probs)
+    print('AUC', AUC)
+    results.append(AUC)
+
+
+#print(train_probs)
+
+
+#cross_val_score(clf1, train, train['signal'], cv=10)
+
+
 
 # Check agreement test
 evaluation.check_agreement(baseline)
