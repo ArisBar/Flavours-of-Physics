@@ -11,13 +11,16 @@ from sklearn.svm import SVC
 import evaluation
 from feature import new_feature
 
+
+
 # Load training data
 folder = 'data/'
 train = pd.read_csv(folder + 'training.csv', index_col='id')
 print('reading training data...')
 train.head()
 
-# Add new features
+
+# Optional: Add new features
 train = new_features(train)
 #test = new_features(test)
 
@@ -27,19 +30,28 @@ variables = list(train.columns)
 var_out = ['SPDhits', 'production', 'signal', 'mass', 'min_ANNmuon']
 variables = [v for v in variables if v not in var_out]
 
+# In case we want to eventually compare BostedTree and Neural network approaches 
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(train[variables], train['signal'], test_size=0.1, random_state=555)
+
+ 
+kf = KFold(len(train), n_folds=5, random_state=555, shuffle=True)
+
+
+
 # Baseline training...
 baseline = GradientBoostingClassifier(n_estimators=40, learning_rate=0.01, subsample=0.7,
                                       min_samples_leaf=10, max_depth=7, random_state=11)
-baseline.fit(train[variables], train['signal'])
+baseline.fit(X_train[variables], train['signal'])
 
 # First attempts   
 
 results=[]
 
-from sklearn.model_selection import train_test_split
+
 from sklearn.ensemble import AdaBoostClassifier
 
-kf = KFold(len(train), n_folds=5, random_state=555, shuffle=True)
+
 
 
 for train_idx, test_idx in kf:
